@@ -6,7 +6,21 @@
 - **Terminal:** PowerShell (VS Code default)
 - **Package Manager:** `uv` (preferred tool)
 - **Local Models:** Ollama open models
-- **Cloud Models:** Anthropic Claude models
+- **Cloud Models:** Google Geimini models
+
+## Available Local Hardware & Ollama Models
+
+> ⚠️ **Hardware Constraints:** Host machine runs Windows 11 with **8.00 GB System RAM** and a **2 GB VRAM GPU (NVIDIA MX350)**.
+
+| Model Name | Size | Operational Task Category | System Compatibility Note |
+| :--- | :--- | :--- | :--- |
+| `qwen2.5:1.5b` | 986 MB | **Agentic Track / Tool Calling / JSON** | **Optimal Sweet Spot.** Fits completely in VRAM. Use for function loops. |
+| `gemma3:1b` | 815 MB | **Core Track / Simple Text Chat & Prompting** | **Safe.** Light memory footprint. Fast local text execution. |
+| `functiongemma:latest` | 300 MB | **Agentic Track / Strict Code formatting** | **Safe.** Ultra-lightweight micro-model custom-tuned for code generation. |
+| `mxbai-embed-large:latest`| 669 MB | **Core Track / Vector Search & RAG** | **Optimal.** Specialized embedder. Fits inside VRAM completely. |
+| `llama3.2:1b` | 1.3 GB | **General Text Instruction Follower** | **Safe.** Runs well on CPU/RAM allocation without choking the OS. |
+| `gemma4:e2b` | 7.2 GB | **DO NOT RUN LOCALLY** | 🚨 **Exceeds System Limits.** Will trigger heavy swapping and system freeze. Use Claude Pro/Gemini API instead for heavy tasks. |
+
 
 ## Core Translation Rules (Strictly Enforce)
 1. **Shell Commands:** Never use Unix syntax. Always replace `export VAR=val` with `$env:VAR="val"` and `ls` with `dir` or `Get-ChildItem`.

@@ -228,3 +228,183 @@ for m in genai.list_models():
         print(f"- {m.name}")
 ```
 
+---
+
+## Ollama Models for course
+
+Hello! It's fantastic to have you on board. As your **Windows-to-Mac AI Bridge** for Ed Donner's courses, I'm here to ensure that every terminal command, package path, and environmental variable translates perfectly onto your Windows 11 setup.
+
+Looking closely at your device specifications and your current Ollama configuration, we have a very specific hardware reality to optimize for. Let's break down your specs first to see what we're working with.
+
+### 🔍 Analysis of Your Hardware Specs
+
+* **System RAM:** **8.00 GB**
+* **GPU:** **NVIDIA GeForce MX350 (2 GB VRAM)**
+* **Current Ollama Models:** You already have `mxbai-embed-large:latest` (669 MB), `llama3.2:1b` (1.3 GB), and a large ~7.2 GB model (`gemma2:9b` or similar).
+
+> ⚠️ **The Critical Constraint:** Ed Donner’s courses (especially the *Agentic* and *Production* tracks) rely heavily on complex tasks like **Structured Output (JSON mode)** and **Tool/Function Calling**.
+> While you have a 7.2 GB model downloaded, running a model that size on a machine with **8GB of total system RAM** and a **2GB VRAM GPU** will cause severe bottlenecking, extreme slowdowns, or crashes. Ollama will be forced to split the layers across your system RAM and swap memory, competing directly with Windows 11 and VS Code.
+
+---
+
+## 🚀 The Best Ollama Models for Your Setup
+
+To get smooth performance without freezing your PC, we need ultra-optimized, state-of-the-art **Small Language Models (SLMs)** that natively support tool calling and fit comfortably within your available memory footprint.
+
+### 1. The Ideal Sweet Spot: `qwen3:1.7b` or `qwen2.5:1.5b`
+
+* **Why it works:** The Qwen series punches way above its weight class. The small parameter variants (`1.5B` / `1.7B`) have incredible instruction-following and surprisingly robust native tool-calling capabilities.
+* **Memory Footprint:** ~1.2 GB to 1.6 GB. It will load completely into your system RAM without starving your OS, allowing your Python scripts to execute quickly.
+
+### 2. The Native Agent: `gemma3:1b`
+
+* **Why it works:** Google's lightweight model is optimized for rapid local inference, excellent reasoning capabilities, and handles system prompt instructions perfectly.
+* **Memory Footprint:** ~1.4 GB.
+
+### 3. The Specialized Tool Caller: `functiongemma:latest` (270M)
+
+* **Why it works:** Google explicitly fine-tuned this ultra-lightweight `270M` parameter model solely for text-only function calling. It is custom-built to be deployed on resource-constrained environments like laptops.
+* **Memory Footprint:** < 500 MB. It runs blazing fast and is exceptional for testing Ed's agentic loop scripts locally.
+
+---
+
+## 🛠️ Step-by-Step PowerShell Setup Guide
+
+Let’s pull these lightweight models and set up your environment inside VS Code. Open your integrated **PowerShell** terminal (`Ctrl + ~`) and follow these steps:
+
+1. **Pull a high-performing SLM:** Downloads the 1.5B parameter model weights.
+Let's fetch the highly capable Qwen model that fits beautifully inside your memory specs:
+
+```powershell
+ollama pull qwen2.5:1.5b
+
+```
+
+
+2. **Check your updated list:** Verify the local registry changes.
+Run the command from your screenshot to verify it registered successfully alongside your other models:
+
+```powershell
+ollama list
+
+```
+
+
+3. **Set up your environmental variables:** Replaces Mac's 'export' command on Windows.
+Ed will frequently tell you to use `export OLLAMA_HOST=...`. In PowerShell, map it like this:
+
+```powershell
+$env:OLLAMA_HOST="http://127.0.0.1:11434"
+
+```
+
+
+4. **Engage your UV Virtual Environment:** Activates script isolation using Windows paths.
+Ed uses `uv` for package management. Instead of the Mac command (`source .venv/bin/activate`), activate your virtual environment using the Windows layout:
+
+```powershell
+.\.venv\Scripts\activate
+
+```
+
+*(You will see your prompt change to confirm it is active, exactly like your `(llm-engineering)` prompt in your screenshot!)*
+
+
+---
+
+## 💡 Pro-Tips for Ed's Courses on Your Machine
+
+### 💻 Mixing Local + Cloud (The Hybrid Approach)
+
+Because your machine's hardware is tightly bounded, I highly recommend using a hybrid approach across the three tracks:
+
+1. **For Embedding & RAG modules:** Keep using your local `mxbai-embed-large:latest`! Generating text embeddings is lightweight and will run beautifully on your computer.
+2. **For Complex Agentic Architectures:** When Ed is teaching multi-agent frameworks or heavy LangGraph pipelines where small local models get confused by massive prompts, remember that you can always use your **Gemini API key** to do the heavy lifting while doing the basic setup validation locally using `qwen2.5:1.5b`.
+
+### 🚨 Quick Check: "ModuleNotFoundError"
+
+If you ever run a file via `python main.py` and get a `ModuleNotFoundError` despite installing packages with `uv`, your VS Code is likely tracking a different global python executable.
+
+* **The Fix:** Press `Ctrl + Shift + P`, search for **"Python: Select Interpreter"**, and explicitly select the executable inside your local workspace folder path: `D:\Github\Udemy-AI-Courses\...\llm_engineering\.venv\Scripts\python.exe`.
+
+Give `ollama pull qwen2.5:1.5b` a run! Let me know if you hit any roadblocks spinning up your first agent script on Windows.
+
+---
+
+## Ollama Models Usage
+
+![](images/3.png)
+
+![](images/4.png)
+
+Welcome back! It looks like you successfully downloaded those lightweight models—excellent work! Your terminal looks pristine, and having your `(llm-engineering)` virtual environment active means you're completely set up for success on Windows.
+
+Let's break down how an LLM interacts with your hardware like we are sitting down for a 1-on-1 tutoring session. No confusing jargon—just practical logic to help you ace Ed Donner’s courses.
+
+---
+
+## 🧠 Part 1: Your Specs vs. How LLMs Use Your Computer
+
+Think of an AI model like a giant book of knowledge. To read it quickly, your computer needs to open this book and hold it entirely inside its ultra-fast short-term memory (**RAM**).
+
+* **VRAM (Video RAM):** This is the lightning-fast memory on your graphics card (NVIDIA MX350). Your GPU has **2 GB** of this. This is the absolute best place to put an AI model because it processes text at blinding speeds.
+* **System RAM:** This is your regular computer memory. You have **8 GB** total, but Windows 11 and VS Code use about 4–5 GB just to stay turned on. That leaves you with roughly **3 GB to 3.5 GB** of free space.
+
+If a model fits completely inside your VRAM or free System RAM, it runs smoothly. If it's too big, things break.
+
+---
+
+## 🛠️ Part 2: Which Models to Use for Which Tasks (With Examples)
+
+Based on your list, here is exactly how to distribute your models across Ed's tracks for the best learning experience.
+
+### 🗺️ Task A: Vector Embeddings & RAG (Retrieval-Augmented Generation)
+
+**Best Model:** `mxbai-embed-large:latest` (669 MB)
+
+* **Why:** This isn't a conversational chatbot. It is a highly specialized model designed to turn text into math numbers (vectors) so your computer can look up information inside documents (Ed's Core Track). Because it's under 1 GB, it fits perfectly into your 2 GB GPU VRAM.
+* **Example 1 (Document Search):** Giving the model a 50-page PDF manual and asking it to find the exact paragraph about "How to reset the machine."
+* **Example 2 (Memory Preservation):** Storing a user's past chat history in a database so the AI remember who you are when you say hello again tomorrow.
+
+### 🤖 Task B: Agentic Loops, Tool/Function Calling
+
+**Best Model:** `qwen2.5:1.5b` (986 MB) or `functiongemma:latest` (300 MB)
+
+* **Why:** In the *Agentic Track*, Ed teaches models how to "think" and execute Python code. `qwen2.5:1.5b` is brilliant at formatting outputs in precise JSON structures without messing up. `functiongemma` is a specialized micro-model that strictly outputs code structures. Both fit inside your GPU VRAM completely.
+* **Example 1 (Calculations):** An AI agent detects that a user asked a math problem, halts its chat, formats a structured command to call your local `calculator()` Python function, gets the result, and replies to the user.
+* **Example 2 (API Fetching):** An agent deciding it needs real-time data, correctly generating a JSON block to trigger a `get_weather(city="Chennai")` routine.
+
+### 💬 Task C: Quick Chat & Simple Instructions
+
+**Best Model:** `gemma3:1b` (815 MB) or `llama3.2:1b` (1.3 GB)
+
+* **Why:** These are amazing, ultra-lightweight conversationalists. They are perfect for basic text generation, summarization, or checking if your code logic flows correctly.
+* **Example 1 (Summarization):** Pasting a long email thread into your Python terminal and asking the model to summarize it in 3 bullet points.
+* **Example 2 (Classification):** Asking the model to look at customer feedback and tag it as either "POSITIVE" or "NEGATIVE".
+
+---
+
+## 🚨 Part 3: The Model That Exceeds Your System Limits
+
+Look closely at your list: **`gemma4:e2b`** (which is roughly a 7B to 9B parameter model compressed down) takes up **7.2 GB** of space.
+
+### Why will it fail?
+
+Your graphics card only has **2 GB** of VRAM. Your free system RAM is only about **3 GB**.
+When you type `ollama run gemma4:e2b`, Ollama tries to open a 7.2 GB book inside a room that only has 5 GB of total combined shelf space left.
+
+### 💥 Example of How It Fails (The Nightmare Scenario)
+
+If you try to run Ed's code using this model, you will experience what we call **System Bottlenecking & Memory Swapping**. Here is exactly what happens step-by-step:
+
+1. **The Freeze:** Ollama takes 1.5 GB and shoves it into your GPU. It takes another 3 GB and jams it into your System RAM. Your System RAM hits **100% capacity**.
+2. **The "Page File" Crawl:** Windows panics because it has no memory left to run VS Code or your Python script. It starts using your hard drive storage as pretend RAM (called a Page File/Swap). Hard drives are hundreds of times slower than RAM.
+3. **The Token Trickle:** Instead of the AI generating text smoothly, you will watch your terminal print out **one single word every 10 to 15 seconds** while your laptop cooling fans scream at full blast.
+4. **The Crash (OOM):** Eventually, your Python script will time out, or Windows will forcefully terminate Ollama with an **Out Of Memory (OOM)** exception error to save your system from crashing completely.
+
+### 💡 The AI Engineer's Solution
+
+When Ed's course demands a heavy reasoning model that your laptop simply cannot load, don't force `gemma4:e2b`. Instead, leverage your **Claude API Key**!
+Use your local small models (`qwen2.5:1.5b`) to test that your loops, loops syntax, and variables work without errors. When you need complex logical execution, swap the model engine over to Claude in your code. It keeps your laptop cool, fast, and highly productive!
+
+---
